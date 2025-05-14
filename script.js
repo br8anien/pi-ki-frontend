@@ -4,21 +4,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const loginSection = document.getElementById("login-section");
   const payBtn = document.getElementById("pay-btn");
 
-  // Prüfen, ob Pi SDK verfügbar ist
   if (!window.Pi) {
     alert("Bitte öffne diese App im offiziellen Pi Browser.");
     return;
   }
 
-  // === PI WALLET LOGIN ===
   loginBtn.addEventListener("click", async () => {
     try {
       const scopes = ["username", "payments"];
+      const isSandbox = window.location.search.includes("sandbox=true");
 
       const auth = await window.Pi.authenticate(
         scopes,
         onIncompletePaymentFound,
-        { sandbox: true } // Wichtig: Sandbox-Modus aktivieren
+        { sandbox: isSandbox }
       );
 
       console.log("Login erfolgreich: ", auth.user.username);
@@ -28,11 +27,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     } catch (err) {
       console.error("Login fehlgeschlagen:", err);
-      alert("Login fehlgeschlagen. Stelle sicher, dass du im Pi Browser bist und die App registriert ist.");
+      alert("Login fehlgeschlagen. Stelle sicher, dass du im Pi Browser bist und die App korrekt geöffnet wurde.");
     }
   });
 
-  // === ZAHLUNG MIT 1 PI ===
   if (payBtn) {
     payBtn.addEventListener("click", async () => {
       const paymentData = {
@@ -49,27 +47,4 @@ document.addEventListener("DOMContentLoaded", () => {
           },
           onReadyForServerCompletion: paymentId => {
             console.log("Zahlung abgeschlossen:", paymentId);
-            alert("Zahlung erfolgreich! Du kannst jetzt mit der KI chatten.");
-          },
-          onCancel: error => {
-            console.error("Zahlung vom Nutzer abgebrochen", error);
-            alert("Zahlung abgebrochen.");
-          },
-          onError: error => {
-            console.error("Zahlungsfehler:", error);
-            alert("Zahlung fehlgeschlagen.");
-          }
-        });
-      } catch (err) {
-        console.error("Fehler beim Erstellen der Zahlung:", err);
-        alert("Zahlung konnte nicht gestartet werden.");
-      }
-    });
-  }
-
-  // === EVENT FÜR UNVOLLSTÄNDIGE ZAHLUNGEN (Pi SDK-Vorgabe) ===
-  async function onIncompletePaymentFound(payment) {
-    console.log("Unvollständige Zahlung gefunden:", payment);
-    // Optional: Zahlung erneut verarbeiten
-  }
-});
+            alert("Zahlung erfolgreich! Du kannst jetzt mit de
