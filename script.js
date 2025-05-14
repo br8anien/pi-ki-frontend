@@ -47,4 +47,25 @@ document.addEventListener("DOMContentLoaded", () => {
           },
           onReadyForServerCompletion: paymentId => {
             console.log("Zahlung abgeschlossen:", paymentId);
-            alert("Zahlung erfolgreich! Du kannst jetzt mit de
+            alert("Zahlung erfolgreich! Du kannst jetzt mit der KI chatten.");
+          },
+          onCancel: error => {
+            console.error("Zahlung abgebrochen", error);
+            alert("Zahlung abgebrochen.");
+          },
+          onError: error => {
+            console.error("Zahlungsfehler", error);
+            alert("Zahlung fehlgeschlagen.");
+          }
+        });
+      } catch (err) {
+        console.error("Fehler beim Erstellen der Zahlung:", err);
+        alert("Zahlung konnte nicht gestartet werden.");
+      }
+    });
+  }
+
+  async function onIncompletePaymentFound(payment) {
+    console.log("Unvollständige Zahlung gefunden:", payment);
+  }
+});
